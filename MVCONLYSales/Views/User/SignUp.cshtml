@@ -1,0 +1,151 @@
+﻿@{
+    ViewBag.Title = "Signup";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 diagram">
+            <img src="~/Images/logo.jpg" class="img-responsive" />
+
+        </div>
+        <div class="col-md-6 login">
+            <form name="myform">
+                <div class="form-group">
+                    <label><b>Create a New Account</b></label>
+                </div>
+                <a class="btn btn-success pull-right" href="@Url.Action("Login", "User")">Login</a>
+                <div class="form-group">
+                    <label for="email">Email address:</label>
+                    <input type="email" class="form-control" id="email" name="email">
+                </div>
+                <div class="form-group">
+                    <label for="pwd">Password:</label>
+                    <input type="password" class="form-control" id="pwd" name="password">
+                </div>
+                <div class="form-group">
+                    <label for="pwd">Confirm Password:</label>
+                    <input type="password" class="form-control" id="confirmpwd" name="confirmPassword">
+                </div>
+                <div class="form-group">
+                    <label for="name">Full Name:</label>
+                    <input type="text" class="form-control" id="name" name="name">
+                </div>
+                <div class="form-group">
+                    <label for="pwd">Phone Number:</label>
+                    <input type="text" class="form-control" id="phone" name="phone">
+                </div>
+                <div class="form-group">
+                    <label for="pwd">Address:</label>
+                    <input type="text" class="form-control" id="address" name="address">
+                </div>
+
+                <div class="form-group">
+                    <label>User Role</label>
+                    @Html.DropDownList("Role", "Please Select Role")
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" id="rbdMale" name="optradio" checked="checked">Male
+                    </label>
+                    <label>
+                        <input type="radio" id="rbdFemale" name="optradio">Female
+                    </label>
+                </div>
+                @*<div class="radio">
+            <label><input type="radio" name="optradio" checked>Male</label>
+            <label><input type="radio" name="optradio">Female</label>
+        </div>*@
+                <button type="button" id="buttonsignup" class="btn btn-success" @*data-toggle="modal" data-target="#myModal"*@>Signup</button>
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Success</h4>
+            </div>
+            <div class="modal-body">
+                <p>Registration successful.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<div id="myModal2" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Failure</h4>
+            </div>
+            <div class="modal-body">
+                <div id="divError" class="alert alert-danger collapse">
+                    <a id="linkclose" class="close" href="#">&times;</a>
+                    <div" id="divErrorText"></div">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var role;
+        $('#Role').change(function () {
+            role = $(this).val();  
+        });
+       
+        $('#buttonsignup').click(function () {
+            var gender;
+            if ($("#rbdMale").prop("checked")) {
+                gender = "Male";
+            } else {
+                gender = "Female";
+            }
+            $.ajax({
+                url: 'http://localhost:56401/api/account/register',
+                method: 'POST',
+                data: {
+                    email: $('#email').val(),
+                    password: $('#pwd').val(),
+                    confirmPassword: $('#confirmpwd').val(),
+                    PhoneNumber: $('#phone').val(),
+                    roleid: role,
+                    address: $('#address').val(),
+                    gender: gender,
+                    name: $('#name').val(),
+
+                },
+                success: function () {
+                    $('#myModal').modal('show');
+                },
+                error: function (jqXHR) {
+                    $('#myModal2').modal('show');
+                    $('#divErrorText').text(jqXHR.responseText);
+                    $('#divError').show('fade');
+                }
+
+            });
+
+        });
+    });
+</script>

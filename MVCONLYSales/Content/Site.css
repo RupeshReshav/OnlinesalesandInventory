@@ -1,0 +1,78 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+.navbar-inverse {
+    background-color: blue;
+    border-color: #E7E7E7;
+}
+
+.navbar-inverse .navbar-header > a {
+    color: white;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: white;
+}
+
+.navbar-inverse .navbar-nav > li > a:hover,
+.navbar-inverse .navbar-nav > li > a:focus {
+    color: #E7E7E7;
+}
+
+.navbar-inverse .navbar-header > a:hover,
+.navbar-inverse .navbar-nav > li > a:focus {
+    color: #E7E7E7;
+}
+.col-md-6{
+    margin-top: 40px;
+}
+span.ajax-text{
+    display: none;
+}
+/* Display of shopping cart. */
+span.loader{
+    display: none;
+}
+span.ajaxmsg {
+    background: green;
+    color: white;
+    padding: 10px;
+    display: none;
+    bottom: 0;
+}
+/* Logout. */
+
+div a {
+    color: white;
+}
+div.addtocart a {
+    color: blue;
+}
+li a {
+    color: black;
+}
+/* Cart. */
+.ib{
+    display:inline-block !important;
+}

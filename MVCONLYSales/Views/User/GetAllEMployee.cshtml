@@ -1,0 +1,111 @@
+﻿
+@{
+    ViewBag.Title = "GetAllEMployee";
+}
+
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="well">
+                <input type="button" id="LoadEmployee" class="btn btn-Success" value="Load Employee" />
+                <input type="button" id="btnLogout" class="btn btn-Success pull-right" value="Logout" />
+            </div>
+            <div class="well hidden" id="tablediv">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Address</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="SessionIdExpireModel" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Session Expired</h4>
+            </div>
+            <div class="modal-body">
+                <p>Please Login Again</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<div id="myModal2" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Failure</h4>
+            </div>
+            <div class="modal-body">
+                <div id="divError" class="alert alert-danger collapse">
+                    <a id="linkclose" class="close" href="#">&times;</a>
+                    <div" id="divErrorText"></div">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#LoadEmployee').click(function () {
+            if (sessionStorage.getItem('accessToken') == null) {
+                var url = '@Url.Action("Login", "User")';
+                window.location.href = url;
+            }
+            $('#btnLogout').click(function () {
+                sessionStorage.removeItem('accessToken');
+                var url = '@Url.Action("Login", "User")';
+                window.location.href = url;
+            });
+            $.ajax({
+                url: 'http://localhost:56401/api/Employee',
+                method: 'GET',
+                ContentType: 'application/json',
+                headers: {
+                    'Authorization': 'Bearer' + sessionStorage.getItem('accessToken')
+                },
+                success: function (data) {
+                    $('#tablediv').removeClass('hidden');
+                    $('#tbody').empty();
+                    $.each(data, function (index, value) {
+                        var row = $('<tr><td>' + value.Name + '</td><td>' + value.Address + '</td><td>' + value.Email + '</td></tr>' );
+                        $('#tbody').append(row);
+                    });
+                },
+                error: function (jqXHR) {
+                    $('#myModal2').modal('show');
+                    $('#divErrorText').text(jqXHR.responseText);
+                    $('#divError').show('fade');
+                }
+
+            });
+
+        });
+    });
+</script>

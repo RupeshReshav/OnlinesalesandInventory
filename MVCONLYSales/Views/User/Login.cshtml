@@ -1,0 +1,143 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+}
+
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 diagram">
+            <img src="~/Images/logo.jpg" class="img-responsive" />
+
+        </div>
+        <div class="col-md-6 login">
+            <form name="myform">
+                <div class="form-group">
+                    <label><b>Existing User Login</b></label>
+                    <a class="btn btn-success pull-right" href="@Url.Action("SignUp", "User")" >Register</a>
+                </div>
+                <div class="form-group">
+                    <label for="email">User Name:</label>
+                    <input type="email" class="form-control" id="email" name="email">
+                </div>
+                <div class="form-group">
+                    <label for="pwd">Password:</label>
+                    <input type="password" class="form-control" id="pwd" name="password">
+                </div>
+               
+                <button type="button" id="buttonLogin" class="btn btn-success" @*data-toggle="modal" data-target="#myModal"*@>Login</button>
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Success</h4>
+            </div>
+            <div class="modal-body">
+                <p>Login successful.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<div id="myModal2" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Failure</h4>
+            </div>
+            <div class="modal-body">
+                <div id="divError" class="alert alert-danger collapse">
+                    <a id="linkclose" class="close" href="#">&times;</a>
+                    <div" id="divErrorText"></div">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+<script>
+   
+    $(document).ready(function () {
+        $('#buttonLogin').click(function () {
+            $.ajax({
+                url: 'http://localhost:56401/token',
+                method: 'POST',
+                ContentType:'application/json',
+                data: {
+                    username: $('#email').val(),
+                    password: $('#pwd').val(),
+                    grant_type:'password'
+
+                },
+                success: function (response) {
+
+                    localStorage.setItem("accessToken", response.access_token);
+                    @*var url = '@Url.Action("GetAllEMployee", "User")';*@
+                    localStorage.setItem("username", response.userName);
+                    var userName = response.userName;
+                    //$.session.set("useName", "userName");
+                    //sessionStorage["Username"] = userName;
+                    $.ajax({
+                        type: 'POST',
+                        url: '/User/Login',
+                        data: 'username=' + userName,
+                        success: function (response) {
+                            if (response == 3) {
+                                window.location.href = '/Admin/Dashboard/Index';
+                            }
+                            else if (response == 2) {
+                                window.location.href = '/Shop/Index';
+                            }
+                        }
+
+                    });
+                   
+                    //window.alert(userName);
+                    //var url = "/User/Login";
+                    //$.post(url, userName, function (data) {
+
+                    //});
+                    //$('#myModal2').modal('show');
+                    //$('#divErrorText').text(JSON.stringify(response));
+                    //$('#divError').show('fade');
+                    
+
+                   
+                   
+                },
+                error: function (jqXHR) {
+                    $('#myModal2').modal('show');
+                    $('#divErrorText').text(jqXHR.responseText);
+                    $('#divError').show('fade');
+                }
+
+            });
+
+        });
+    });
+</script>
+

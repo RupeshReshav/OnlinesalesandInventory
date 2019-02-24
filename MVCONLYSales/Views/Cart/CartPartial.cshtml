@@ -1,0 +1,13 @@
+﻿@model MVCONLYSales.Models.ViewModel.Cart.CartVm
+
+<div class="ajaxcart" style="color:white;">
+    <ul class="nav navbar-nav navbar-right">
+        <li><a href="/User/Logout"><span class="glyphicon glyphicon-user"></span> LogOut</a></li>
+
+    </ul>
+    Your Cart: @Model.Quantity Item(s)-    $@Model.Price
+    <br />
+    @Html.ActionLink("CheckOut", "Index", "Cart")
+
+
+</div>

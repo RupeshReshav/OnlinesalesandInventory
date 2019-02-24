@@ -1,0 +1,187 @@
+﻿@model IEnumerable<MVCONLYSales.Models.ViewModel.Shop.Category>
+
+@{
+    ViewBag.Title = "Category";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<h2>Category</h2>
+<div class="new-cat">
+    <input type="text" id="newcatName" />
+
+    <p>
+        <a href="#" id="newcata">Add New Category</a>
+        <span class="ajax-text">
+            <img src="~/Content/Image/ajax-loader.gif" />
+        </span>
+    </p>
+</div>
+@if (!Model.Any())
+{
+    <h1>No category has been added.</h1>
+}
+else
+{
+    <table class="table sorting" id="pages">
+        <tr>
+            <th class="home">
+                @Html.DisplayNameFor(model => model.CategotyName)
+            </th>
+
+
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr id="id_@item.Id">
+                <td>
+                    <div class="ajaxdiv"></div>
+                    @Html.EditorFor(modelItem => item.CategotyName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                </td>
+
+
+                <td>
+
+                    @Html.ActionLink("Delete", "DeleteCategory", new { id = item.Id }, new { @class = "delete" })
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+@section Scripts{
+
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            ////////////////////////////
+            /*
+             * Create Category
+             */
+            var newCatA = $('#newcata');
+            var newCatTextInput = $('#newcatName');
+            var ajaxText = $('span.ajax-text');
+            var table = $("table#pages tbody");
+
+            newCatTextInput.keyup(function (e) {
+                if (e.keyCode == 13) {
+                    newCatA.click();
+                }
+            });
+            newCatA.click(function (e) {
+                e.preventDefault();
+                var catname = newCatTextInput.val();
+                if (catname.length < 2) {
+                    alert("Category must be of at least two character long");
+                    return false;
+                }
+                ajaxText.show();
+                var url = "/admin/shop/AddCategory";
+                $.post(url, { catname : catname }, function (data) {
+                    var response = data.trim();
+                    if (response == "category not accepted") {
+                        ajaxText.html("<span class='alert alert-danger'>Category Not Added</span>");
+                        setTimeout( function () {
+                            ajaxText.fadeOut(function () {
+                                ajaxText.html("<img src=/Content/Image/ajax-loader.gif />");
+                            });
+                        }, 2000);
+                        return false;
+                    } else {
+                        if (!$("table#pages").length) {
+                            location.reload();
+                        } else {
+                            ajaxText.html("<span class='alert alert-success'>Category  Added</span>");
+                            setTimeout( function () {
+                                ajaxText.fadeOut(function () {
+                                    ajaxText.html("<img src=/Content/Image/ajax-loader.gif/>");
+                                });
+                            }, 2000);
+                            newCatTextInput.val("");
+                            var toAppend = $("table#pages tbody tr:last").clone();
+                            toAppend.attr("id", "id_" + data);
+                            toAppend.find("#item_CategotyName").val(catname);
+                            toAppend.find("a.delete").attr("href", "/Admin/Shop/DeleteCategory" + data);
+                            table.append(toAppend);
+                            table.sortable("refresh");
+                        }
+                    }
+                });
+            });
+            ////////////////////////////////
+            ////////////////////////////
+            /*
+             * ReOrder Category
+             */
+            $("table#pages tbody").sortable({
+                items: "tr:not(.home)",
+                update: function () {
+                    var ids = $("table#pages tbody").sortable("serialize");
+                    var url = "/Admin/Shop/ReorderCategory";
+                    $.post(url, ids, function (data) {
+
+                    });
+                }
+            });
+            //////////////////////////////
+            /*
+             * Page deletion
+             */
+            $('body').on('click', 'a.delete', function () {
+                if (!confirm("Confirm Category deletion")) {
+                    return false;
+                }
+            })
+            
+
+            ////////////////////////////
+            /*
+             * Edit Category
+             */
+            var originalText;
+            $('table#pages input.text-box').dblclick(function () {
+                originalText = $(this).val();
+                $(this).attr('readonly', false);
+
+            });
+            $('table#pages input.text-box').keyup(function (e) {
+                if (e.keyCode == 13) {
+                    $(this).blur();
+                }
+            });
+            $('table#pages input.text-box').blur(function () {
+                var $this = $(this);
+                var ajaxdiv = $this.parent().find(".ajaxdiv");
+                var catName = $this.val();
+                var id = $this.parent().parent().attr("id").substring(3);
+                var url = "/admin/shop/RenameCategory";
+                if (catName.length < 2) {
+                    alert("Category must be of at least two character long");
+                    return false;
+                }
+                $.post(url, { catName: catName, id: id }, function (data) {
+                    var response = data.trim();
+                    if (response == "categorytaken") {
+                        $this.val(originalText);
+                        ajaxdiv.html("<span class='alert alert-danger'>Category Not Added</span>").show();
+
+                    } else {
+                        ajaxdiv.html("<span class='alert alert-success'>Category  Edited</span>").show();
+                    }
+                    setTimeout(function () {
+                        ajaxdiv.fadeOut(function () {
+                            ajaxdiv.html("");
+                        }); 
+                    }, 2000);
+                }).done(function () {
+                    $this.attr('readonly', true);
+                });
+            });
+        });
+    </script>
+    
+
+}
+
+
+

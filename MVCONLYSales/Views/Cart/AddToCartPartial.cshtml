@@ -1,0 +1,11 @@
+﻿@model MVCONLYSales.Models.ViewModel.Cart.CartVm
+
+Your Cart: @Model.Quantity Item(s)- $@Model.Price
+<br />
+@Html.ActionLink("CheckOut", "Index", "Cart")
+
+
+@if (ViewBag.Message != null)
+{
+    <h3>@ViewBag.Message</h3>
+}

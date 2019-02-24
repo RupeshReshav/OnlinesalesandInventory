@@ -1,0 +1,4 @@
+﻿1>------ Build started: Project: Angular, Configuration: Debug Any CPU ------
+1>C:\Users\shahr\source\repos\Angular\Angular\node_modules\rxjs\Subject.d.ts(24,5): error TS2416: Build:Property 'lift' in type 'Subject<T>' is not assignable to the same property in base type 'Observable<T>'.
+1>  Angular -> C:\Users\shahr\source\repos\Angular\Angular\bin\Angular.dll
+========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========

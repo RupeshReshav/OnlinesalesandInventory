@@ -1,0 +1,194 @@
+﻿@model MVCONLYSales.Models.ViewModel.Shop.Product
+
+@{
+    ViewBag.Title = "EditProduct";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit Product</h2>
+@if (TempData["SM"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SM"]
+    </div>
+}
+<div>
+    @Html.ActionLink("Back to Product", "ProductList")
+</div>
+
+@using (Html.BeginForm("EditProduct", "Shop", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.ProductId)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProductName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Description, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Quantity, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Price, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.CategoryId, Model.Categories, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SupplierId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.SupplierId, Model.Supplier, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.SupplierId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ImageUrl, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.EditorFor(model => model.ImageUrl, new { htmlAttributes = new { @class = "form-control" } })
+            <div class="col-md-10">
+                <img src="/Images/Uploads/Products/@Model.ProductId/Thumbs/@Model.ImageUrl" />
+                <br />
+                <input type="file" name="file" id="ImageUpload" />
+                <img id="imgpreview" src="#" />
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Edit Product" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+<hr />
+@if (!Model.GalleryImage.Any())
+{
+    <h3>No Gallery image for this product.</h3>
+}
+<form action="/Admin/Shop/SaveGalleryImages" method="post" enctype="multipart/form-data" class="dropzone" id="my-dropzone">
+    <div class="fallback">
+        <input type="file" name="file" multiple />
+        <input type="submit" value="Upload" />
+    </div>
+</form>
+<br />
+@foreach (var image in Model.GalleryImage)
+{
+    <div style="display:inline-block">
+        <img src="~/Images/Uploads/@Model.ProductId/Gallery/Thumbs/@image" />
+        @Html.ActionLink("Delete", "DeleteImage", "Shop", new { @class = "deleteimage", data_name = image })
+    </div>
+}
+<link href="~/Scripts/dropzone/basic.css" rel="stylesheet" />
+<link href="~/Scripts/dropzone/dropzone.css" rel="stylesheet" />
+ 
+
+@section Scripts{
+    <script src="~/Scripts/dropzone/dropzone.js"></script>
+    <script>
+      
+     //////////////////////////////////////////////////////////////
+
+    /*
+    * Dropzone js
+    */
+
+
+    Dropzone.options.dropzoneForm = {
+        acceptedFiles: "image/*",
+        init: function() {
+            this.on("complete", function (file) {
+                if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+                    location.reload();
+                }
+            });
+
+            this.on("sending", function (file, xhr, formData) {
+                formData.append("id", @Model.ProductId);
+            });
+        }
+        };
+     
+     $(document).ready(function () {
+     ///////////////////////////////////////////////
+         function readURl(input) {
+             if (input.files && input.files[0]) {
+                 var reader = new FileReader();
+                 reader.onload = function (e) {
+                     $('img#imgpreview')
+                         .attr('src', e.target.result)
+                         .width(200)
+                         .height(200);
+                 }
+                 reader.readAsDataURL(input.files[0]);
+             }
+         }
+         $('#ImageUpload').change(function () {
+             readURl(this);
+         });
+
+
+
+     
+
+    //////////////////////////////////////////////////////////////
+
+    /*
+    * Dropzone js
+    */
+
+    $("a.deleteimage").click(function (e) {
+        e.preventDefault();
+
+        if (!confirm("Confirm deletion")) return false;
+
+        var $this = $(this);
+        var url = "/admin/shop/DeleteImage";
+        var imageName = $this.data("name");
+
+        $.post(url, { id: @Model.ProductId, imageName: imageName }, function(data) {
+            $this.parent().fadeOut("fast");
+        });
+
+    });
+
+    //////////////////////////////////////////////////////////////
+     });
+    </script>
+
+
+}

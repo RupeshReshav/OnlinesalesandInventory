@@ -1,0 +1,90 @@
+﻿@model MVCONLYSales.Models.ViewModel.Shop.Product
+
+@{
+    ViewBag.Title = Model.ProductName;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>@Model.ProductName</h3>
+<br />
+<div class="row">
+    <div class="col-xs-12 col-md-4">
+        <img src="~/Images/Uploads/Products/@Model.ProductId/Thumbs/@Model.ImageUrl" />
+    </div>
+    <div class="col-xs-12 col-md-4">
+        <div>
+            @Html.DisplayFor(model => model.Description)
+            <br />
+            $@Html.DisplayFor(model => model.Price)
+            <br />
+            <label><b>Quantiry in Stock</b></label>
+            <span style="color:red">@Html.DisplayFor(model => model.Quantity)</span>
+        </div>
+
+
+
+        <br />
+        <div class="addtocart">
+            <a href="#" class="addtocart">Add To Cart</a>
+            <span class="loader">
+                <img src="~/Content/Image/ajax-loader.gif" />
+            </span>
+            <span class="ajaxmsg">
+                The product has been added to your cart.
+            </span>
+        </div>
+    </div>
+</div>
+
+
+<link href="~/Content/jquery.fancybox.css" rel="stylesheet" />
+@section  Scripts{
+
+<script src="~/Scripts/jquery.fancybox.js"></script>
+<script>
+    $(document).ready(function () {
+        //////////////////////
+        /*
+         * Fancybox
+         */
+        $(".fancybox").fancybox();
+        //////////////////////
+        /*
+         * Add to cart.
+         */
+        $('a.addtocart').click(function (e) {
+            e.preventDefault();
+            $("span.loader").addClass("ib");
+            $.ajax({
+                url : "/Cart/AddToCartPartial",
+                data: { id:@Model.ProductId},
+                type: 'GET',
+                success: function (data) {
+                    $(".ajaxcart").html(data);
+                },
+                error: function (data) {
+                    alert('Insufficient item in stock!'); 
+                }
+            }).done(function () {
+                $("span.loader").removeClass("ib");
+                $("span.ajaxmsg").addClass("ib");
+                setTimeout(function () {
+                    $("span.ajaxmsg").fadeOut();
+                    $("span.ajaxmsg").removeClass("ib");
+                }, 1000);
+            });
+            @*var url = "/Cart/AddToCartPartial";
+            $.get(url, { id:@Model.ProductId}, function (data) {
+                $(".ajaxcart").html(data);
+            }).done(function () {
+                $("span.loader").removeClass("ib");
+                $("span.ajaxmsg").addClass("ib");
+                setTimeout(function () {
+                    $("span.ajaxmsg").fadeOut();
+                    $("span.ajaxmsg").removeClass("ib");
+                },1000);
+            });*@
+        });
+    });
+ </script>
+}

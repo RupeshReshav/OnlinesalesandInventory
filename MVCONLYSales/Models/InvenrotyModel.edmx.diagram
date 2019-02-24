@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="2c977fe26e8b47c5a084519324f41a55" Name="Diagram1">
+        <EntityTypeShape EntityType="NewInventoryModel.tblRole" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NewInventoryModel.AspNetUser" Width="1.5" PointX="3.375" PointY="1" />
+        <EntityTypeShape EntityType="NewInventoryModel.tblCategory" Width="1.5" PointX="3.375" PointY="7.375" />
+        <EntityTypeShape EntityType="NewInventoryModel.tblProduct" Width="1.5" PointX="5.625" PointY="1.875" />
+        <AssociationConnector Association="NewInventoryModel.FK_AspNetUsers_AspNetRoles" />
+        <AssociationConnector Association="NewInventoryModel.FK_tblProduct_tblProduct" />
+        <AssociationConnector Association="NewInventoryModel.FK_tblProduct_tblCategory" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

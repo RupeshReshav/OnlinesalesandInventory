@@ -1,0 +1,12 @@
+﻿@model IEnumerable<MVCONLYSales.Models.ViewModel.Shop.Category>
+
+<h3>Category List</h3>
+<ul>
+    @foreach (var item in Model)
+    {
+        <li><a href="/Shop/Category/@item.Id" >@item.CategotyName</a></li>
+    }
+
+
+</ul>
+
